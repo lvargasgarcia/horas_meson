@@ -228,10 +228,16 @@ public class EmpleadoController {
 
             Duration totalDuration = Duration.ZERO;
             if (entradaMañana != null && salidaMañana != null) {
-                totalDuration = totalDuration.plus(Duration.between(entradaMañana, salidaMañana));
+                var duracionManana = Duration.between(entradaMañana, salidaMañana);
+                if(!duracionManana.isNegative()) {
+                    totalDuration = totalDuration.plus(duracionManana);
+                }
             }
             if (entradaTarde != null && salidaTarde != null) {
-                totalDuration = totalDuration.plus(Duration.between(entradaTarde, salidaTarde));
+                var duracionTarde = Duration.between(entradaTarde, salidaTarde);
+                if(!duracionTarde.isNegative()) {
+                    totalDuration = totalDuration.plus(duracionTarde);
+                }
             }
 
             long hours = totalDuration.toHours();

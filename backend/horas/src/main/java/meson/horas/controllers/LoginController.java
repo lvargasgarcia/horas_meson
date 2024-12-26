@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.regex.Pattern;
+
 @RestController
 @RequestMapping("/login")
 public class LoginController {
@@ -27,8 +29,8 @@ public class LoginController {
 
         try {
 
-            if(!empleado.getNombre().equals("administrador")) throw new Exception();
-            var empl = empleadoRepository.findByNombre(empleado.getNombre());
+            if(!empleado.getNombre().matches("\\s*administrador\\s*")) throw new Exception();
+            var empl = empleadoRepository.findByNombre("administrador");
             var id = empl.getId();
             if(!empl.checkPassword(empleado.getPassword())) {
                 throw new Exception();

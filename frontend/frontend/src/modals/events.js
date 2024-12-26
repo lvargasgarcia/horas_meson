@@ -1,4 +1,4 @@
-const host = "192.168.1.134:8080/";
+const server = "http://192.168.1.134:8080/";
 
 const registrateEvent = async (mode) => {
     
@@ -100,7 +100,9 @@ const sendEventRequest = (username, password, mode) => {
     };
 
     // Enviar los datos a la API usando fetch
-    fetch(host + ((mode === 0) ? "empleado":"evento"), {
+    const endpoint = server + ((mode === 0) ? "empleado":"evento");
+    console.log(endpoint);
+    fetch(endpoint, {
         method: "POST", // Método HTTP
         headers: {
             "Content-Type": "application/json" // Indicamos que los datos se envían como JSON

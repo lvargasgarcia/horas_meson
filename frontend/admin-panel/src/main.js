@@ -84,6 +84,7 @@ const generateReport = async (id, fechaInicio, fechaFin) => {
     const jwt = sessionStorage.getItem('jsonWebToken');
     const endpoint = id ? `${apiUrl}/generarInforme/${id}` : `${apiUrl}/generarInforme`;
     const endpointQuery = `${endpoint}?fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}`;
+    console.log(endpointQuery);
     const response = await fetch(endpointQuery, {
       method: 'GET',
       headers: {
@@ -129,6 +130,8 @@ const generateReport = async (id, fechaInicio, fechaFin) => {
 
 // Función para manejar el evento de autenticación
 const authenticate = async () => {
+  
+  sessionStorage.clear();
   // Pedir al usuario el nombre de usuario y la contraseña mediante prompt
   const username = prompt("Introduce tu nombre de usuario:");
   if (!username) {
@@ -147,6 +150,8 @@ const authenticate = async () => {
     nombre: username,
     password: password,
   };
+
+  console.log(data);
 
   try {
     const response = await fetch("http://" + host + "/login", {

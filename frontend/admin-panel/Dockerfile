@@ -1,34 +1,33 @@
-# Usa una imagen base de Node.js (con Alpine para ser más ligera)
-FROM node:18-alpine AS build
+# Etapa 1: Construir el proyecto
+FROM node AS build-stage
 
-# Establece el directorio de trabajo en el contenedor
+# Crear y usar el directorio de la app
 WORKDIR /app
 
-# Copia los archivos package.json y package-lock.json (o yarn.lock) para instalar dependencias
+# Copiar archivos de la aplicación al contenedor
 COPY package*.json ./
 
-# Instala las dependencias del proyecto
+# Instalar dependencias
 RUN npm install
 
-# Copia todo el código fuente del proyecto al contenedor
+# Copiar el resto del código fuente al contenedor
 COPY . .
 
-# Ejecuta el build de Vite
+# Ejecutar el build de Vite
 RUN npm run build
 
-# Usa la imagen base de NGINX para servir los archivos estáticos generados por Vite
-FROM nginx:alpine
+# Etapa 2: Configurar Nginx para servir los archivos
+FROM nginx AS production-stage
 
-# Copia los archivos generados por Vite al directorio de NGINX
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copiar los archivos generados en la etapa de build al directorio de Nginx
+COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-# Copia la configuración personalizada de NGINX
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copiar configuración personalizada de Nginx si es necesario
+# (opcional: descomentar si tienes un archivo nginx.conf personalizado)
+# COPY nginx.conf /etc/nginx/nginx.conf
 
 # Exponer el puerto 80
 EXPOSE 80
 
-# Comando para ejecutar NGINX
+# Comando para iniciar Nginx
 CMD ["nginx", "-g", "daemon off;"]
-
-

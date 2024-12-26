@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 7175
+      MYSQL_DATABASE: meson
+      MYSQL_USER: lalo
+      MYSQL_PASSWORD: 7175
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./bbdd/data:/var/lib/mysql
+    networks:
+      - my_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--host=localhost"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+  horas-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: horas_app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: horas
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/meson
+      SPRING_DATASOURCE_USERNAME: lalo
+      SPRING_DATASOURCE_PASSWORD: 7175
+      JWT_SECRET: Ggl+HoPPlLwrZCLU4mOrciar8ssa5AuHqfMcld2eKfXStbOPYlJxmfsoKVjB0PG2JoY2PZVZxh9auZ22vof7fg==
+      JWT_TOKEN_VALIDITY: 600
+    depends_on:
+      - mysql
+    networks:
+      - my_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+  admin-panel:
+    build:
+      context: ./frontend/admin-panel
+      dockerfile: Dockerfile
+    container_name: admin_container
+    restart: always
+    ports:
+      - "9001:80"
+    volumes:
+      - ./frontend/admin-panel/dist:/usr/share/nginx/html
+      - ./frontend/admin-panel/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - my_network
+
+  fichar:
+    build:
+      context: ./frontend/frontend
+      dockerfile: Dockerfile
+    container_name: fichar_container
+    restart: always
+    ports:
+      - "9000:80"
+    volumes:
+      - ./frontend/frontend/dist:/usr/share/nginx/html
+      - ./frontend/frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+
+

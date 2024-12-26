@@ -1,0 +1,40 @@
+# Node modules (para el proyecto de Vite)
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Directorio de build para Vite
+/dist
+
+# Archivos de configuración de Vite
+.vite/
+
+# Dependencias de Vite
+package-lock.json
+yarn.lock
+
+# Directorios generados por Spring Boot
+/target/
+*.jar
+*.war
+
+# Archivos de configuración del IDE
+.idea/
+.vscode/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de Spring Boot relacionados con la base de datos
+*.sql
+*.h2.db
+
+# Configuraciones locales de Maven o Gradle
+/.mvn/
+/.gradle/
+build/
+
+bbdd/

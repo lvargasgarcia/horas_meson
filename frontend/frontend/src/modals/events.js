@@ -1,4 +1,4 @@
-const host = "192.168.1.242:8080";
+const host = "192.168.1.134:8080";
 
 const registrateEvent = async (mode) => {
     

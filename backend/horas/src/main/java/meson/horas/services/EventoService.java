@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import meson.horas.repositories.EventoRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Component
@@ -29,9 +31,8 @@ public class EventoService {
     public Evento saveEvento(EventoDTO evento) {
         
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Europe/Madrid"));
-        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
-        
-        var fechaYHoraActual = localDateTime;
+        LocalDateTime fechaYHoraActual = zonedDateTime.toLocalDateTime();
+
         var empleado = empleadoRepository.findByNombre(evento.getNombre());
         if(!empleado.checkPassword(evento.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");

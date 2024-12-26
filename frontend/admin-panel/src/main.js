@@ -1,4 +1,5 @@
-const apiUrl = 'http://localhost:8080/empleado'; // Asegúrate de que tu API esté corriendo en este URL
+const apiUrl = 'http://192.168.1.242:8080/empleado'; // Asegúrate de que tu API esté corriendo en este URL
+const host = "192.168.1.242:8080";
 
 // Referencias de los elementos en el DOM
 const empleadosTable = document.getElementById('empleados-table').getElementsByTagName('tbody')[0];
@@ -148,7 +149,7 @@ const authenticate = async () => {
   };
 
   try {
-    const response = await fetch("http://localhost:8080/login", {
+    const response = await fetch("http://" + host + "/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -16,18 +16,13 @@ COPY . .
 # Ejecutar el build de Vite
 RUN npm run build
 
-# Etapa 2: Configurar Nginx para servir los archivos
-FROM nginx AS production-stage
+# Etapa 2: Configurar Apache para servir los archivos
+FROM httpd:alpine AS production-stage
 
-# Copiar los archivos generados en la etapa de build al directorio de Nginx
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-
-# Copiar configuración personalizada de Nginx si es necesario
-# (opcional: descomentar si tienes un archivo nginx.conf personalizado)
-# COPY nginx.conf /etc/nginx/nginx.conf
+# Copiar los archivos generados en la etapa de build al directorio de Apache
+COPY --from=build-stage /app/dist /usr/local/apache2/htdocs/
 
 # Exponer el puerto 80
 EXPOSE 80
 
-# Comando para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para iniciar Apache (no es necesario añadir CMD, ya que la imagen de Apache ya lo hace por defecto)

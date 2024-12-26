@@ -1,3 +1,5 @@
+const host = "192.168.1.242:8080";
+
 const registrateEvent = async (mode) => {
     
     generateModal(mode);
@@ -98,7 +100,7 @@ const sendEventRequest = (username, password, mode) => {
     };
 
     // Enviar los datos a la API usando fetch
-    fetch("http://localhost:8080/" + ((mode === 0) ? "empleado":"evento"), {
+    fetch(host + ((mode === 0) ? "empleado":"evento"), {
         method: "POST", // Método HTTP
         headers: {
             "Content-Type": "application/json" // Indicamos que los datos se envían como JSON

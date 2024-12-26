@@ -1,12 +1,24 @@
+# Usa una imagen base con Maven y JDK
+FROM maven:latest AS build
+
+# Establece un directorio de trabajo en el contenedor
+WORKDIR /app
+
+# Copia el archivo pom.xml y el código fuente al contenedor
+COPY pom.xml .
+COPY src/ ./src/
+
+# Ejecuta 'mvn package' para construir el JAR
+RUN mvn clean package -DskipTests
+
 # Usa una imagen base de JDK para ejecutar el JAR
 FROM openjdk:21-jdk-slim
 
 # Establece un directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copia el JAR generado en la imagen
-ARG JAR_FILE=target/horas-0.0.1-SNAPSHOT.jar 
-COPY ${JAR_FILE} app.jar
+# Copia el JAR generado desde la fase de build
+COPY --from=build /app/target/horas-0.0.1-SNAPSHOT.jar app.jar
 
 # Exponer el puerto del servidor configurado en application.properties (8080 por defecto)
 EXPOSE 8080
@@ -22,4 +34,5 @@ ENV SPRING_APPLICATION_NAME=horas \
 
 # Comando para ejecutar el JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
 

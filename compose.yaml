@@ -25,7 +25,7 @@ services:
 
   horas-app:
     build:
-      context: .
+      context: ./backend/horas
       dockerfile: Dockerfile
     container_name: horas_app
     restart: always

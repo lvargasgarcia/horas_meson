@@ -27,7 +27,11 @@ public class EventoService {
     }
 
     public Evento saveEvento(EventoDTO evento) {
-        var fechaYHoraActual = LocalDateTime.now();
+        
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Europe/Madrid"));
+        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+        
+        var fechaYHoraActual = localDateTime;
         var empleado = empleadoRepository.findByNombre(evento.getNombre());
         if(!empleado.checkPassword(evento.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");

@@ -1,17 +1,25 @@
 #!/bin/bash
 
-REQUEST="http://localhost:8080/empleado/generarInforme?fechaInicio=2024-12-24&fechaFin=$(date +"%Y-%m-%d")"
+HOSTNAME="localhost:8080"
+
+ADMIN_USERNAME="administrador"
+ADMIN_PASSWORD="picoteo"
+
+REQUEST="http://$HOSTNAME/empleado/generarInforme?fechaInicio=2024-12-24&fechaFin=$(date +"%Y-%m-%d")"
 
 echo $REQUEST
 
-TOKEN="Bearer $(curl -s -D - -X POST -H "Content-Type: application/json" -d "{\"nombre\":\"administrador\", \"password\":\"picoteo\"}" http://localhost:8080/login | awk '/^Authorization:/ {print $0}' | sed -n 's/^Authorization: \(.*\)/\1/p')"
+TOKEN="$(curl -s -D - -X POST -H "Content-Type: application/json" -d "{\"nombre\":\"$ADMIN_USERNAME\", \"password\":\"$ADMIN_PASSWORD\"}" http://$HOSTNAME/login | awk '/^Authorization:/ {print $0}' | sed -n 's/^Authorization: \(.*\)/\1/p')"
 
-echo $TOKEN
+ZIP_FILE=~/informes_meson/$(date +"%Y-%m-%d").zip
+TARGET_DIR=~/informes_meson/$(date +"%Y-%m-%d")
 
-ZIP_FILE=~/informes_meson/hola.zip
+rm $ZIP_FILE
+rm -r $TARGET_DIR
 
-curl -H "Authorization: $TOKEN" $REQUEST > $ZIP_FILE
+http GET $REQUEST Authorization:"Bearer $TOKEN" > $ZIP_FILE
 
-unzip $ZIP_FILE -d ~/informes_meson/
+unzip $ZIP_FILE -d $TARGET_DIR 
 
 rclone sync /home/lalo/informes_meson drive_meson:/informes_meson --progress
+

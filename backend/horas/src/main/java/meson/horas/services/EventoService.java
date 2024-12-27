@@ -33,11 +33,15 @@ public class EventoService {
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Europe/Madrid"));
         LocalDateTime fechaYHoraActual = zonedDateTime.toLocalDateTime();
 
+        if(fechaYHoraActual.getHour() <= 2){
+            fechaYHoraActual = fechaYHoraActual.minusDays(1);
+        }
+
         var empleado = empleadoRepository.findByNombre(evento.getNombre());
         if(!empleado.checkPassword(evento.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
-        var turno = fechaYHoraActual.getHour() < 19 ? 0 : 1;
+        var turno = (fechaYHoraActual.getHour() < 19 && fechaYHoraActual.getHour() > 2) ? 0 : 1;
         var tipo = !empleado.isTrabajando() ? 0 : 1;
         empleado.setTrabajando(!empleado.isTrabajando());
         return eventoRepository.save(Evento.builder()

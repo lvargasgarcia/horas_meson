@@ -235,9 +235,10 @@ public class EmpleadoController {
             }
             if (entradaTarde != null && salidaTarde != null) {
                 var duracionTarde = Duration.between(entradaTarde, salidaTarde);
-                if(!duracionTarde.isNegative()) {
-                    totalDuration = totalDuration.plus(duracionTarde);
+                if (duracionTarde.isNegative()) {
+                    duracionTarde = Duration.between(entradaTarde, salidaTarde.plusDays(1));
                 }
+                totalDuration = totalDuration.plus(duracionTarde);
             }
 
             long hours = totalDuration.toHours();

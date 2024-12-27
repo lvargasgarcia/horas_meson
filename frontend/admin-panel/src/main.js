@@ -1,4 +1,4 @@
-const ip = "192.168.1.149"
+const ip = "192.168.1.242";
 const host = ip + ":8080";
 const apiUrl = 'http://' + host + '/empleado'; // Asegúrate de que tu API esté corriendo en este URL
 
@@ -15,7 +15,7 @@ document.getElementById('generar-informes-button').addEventListener('click', () 
 const loadEmpleados = async () => {
   try {
     const jwt = sessionStorage.getItem('jsonWebToken');
-    console.log(jwt)
+    //console.log(jwt)
     const response = await fetch(apiUrl, {
       headers: {
         'Authorization': `Bearer ${jwt}`
@@ -31,11 +31,13 @@ const loadEmpleados = async () => {
 
     empleados.forEach(empleado => {
       const row = empleadosTable.insertRow();
+      const dni = empleado.dni ? empleado.dni : 'No disponible';
+      const nombre = empleado.nombre ? empleado.nombre : 'No disponible';
       row.innerHTML = `
-        
-        <td>${empleado.nombre}</td>
+        <td>${dni}</td>
+        <td>${nombre}</td>
         <td>
-          <button id="delete-${empleado.id}">Eliminar</button>
+          <button id="delete-${empleado.id}" class="delete-button">Eliminar</button>
           <button id="generar-informe-${empleado.id}">Generar Informe</button>
         </td>
       `;
@@ -81,7 +83,9 @@ const deleteEmpleado = async (id) => {
 };
 
 const generateReport = async (id, fechaInicio, fechaFin) => {
+  
   try {
+  
     const jwt = sessionStorage.getItem('jsonWebToken');
     const endpoint = id ? `${apiUrl}/generarInforme/${id}` : `${apiUrl}/generarInforme`;
     const endpointQuery = `${endpoint}?fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}`;
@@ -124,62 +128,9 @@ const generateReport = async (id, fechaInicio, fechaFin) => {
     } else {
       alert('Error al generar informe');
     }
+
   } catch (error) {
     console.error('Error al generar informe:', error);
-  }
-};
-
-// Función para manejar el evento de autenticación
-const authenticate = async () => {
-  
-  sessionStorage.clear();
-  // Pedir al usuario el nombre de usuario y la contraseña mediante prompt
-  const username = prompt("Introduce tu nombre de usuario:");
-  if (!username) {
-    alert("El nombre de usuario es obligatorio.");
-    return;
-  }
-
-  let password = prompt("Introduce tu contraseña:");
-  if (!password) {
-    password = prompt("Introduce tu contraseña:");
-    return;
-  }
-
-  // Crear el objeto de datos con el nombre de usuario y la contraseña
-  const data = {
-    nombre: username,
-    password: password,
-  };
-
-  console.log(data);
-
-  try {
-    const response = await fetch("http://" + host + "/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    // Si la respuesta es exitosa (status 200-299)
-    if (response.ok) {
-      const jwt = response.headers.get("Authorization");
-      if (jwt) {
-        sessionStorage.setItem("jsonWebToken", jwt);
-        alert("Autenticación exitosa");
-        loadEmpleados(); // Recargar la lista de empleados
-      } else {
-        alert("Token no recibido en los encabezados.");
-      }
-    } else {
-      const errorMessage = await response.text();
-      alert("Credenciales incorrectas: " + errorMessage);
-    }
-  } catch (error) {
-    console.error("Error al intentar autenticar:", error);
-    alert("Hubo un error al intentar autenticarte. Intenta de nuevo.");
   }
 };
 
@@ -238,18 +189,15 @@ const generarModalFechas = async (id) => {
   confirmButton.style.cursor = 'pointer';
 
   confirmButton.addEventListener('click', async () => {
+    
     const fechaInicio = fechaInicioInput.value;
     const fechaFin = fechaFinInput.value;
-
-    if (!fechaInicio || !fechaFin) {
-      alert('Por favor, selecciona ambas fechas.');
-      return;
-    }
 
     generateReport(id, fechaInicio, fechaFin);
 
     modal.remove();
-  }); // Cierra el modal
+  
+  });
 
   const closeButton = document.createElement('button');
   closeButton.innerText = 'Cancelar';
@@ -271,5 +219,130 @@ const generarModalFechas = async (id) => {
   modalContent.appendChild(closeButton);
 
   document.body.appendChild(modal);
+
+};
+
+const authenticate = () => {
+    
+  const modal = document.createElement('div');
+  modal.setAttribute('id', 'modal');
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100%';
+  modal.style.height = '100%';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+  modal.style.display = 'flex';
+  modal.style.justifyContent = 'center';
+  modal.style.alignItems = 'center';
+  modal.style.zIndex = '1000';
+
+  const modalContent = document.createElement('div');
+  modalContent.style.backgroundColor = '#fff';
+  modalContent.style.padding = '20px';
+  modalContent.style.borderRadius = '8px';
+  modalContent.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  modalContent.style.textAlign = 'center';
+
+  const usernameLabel = document.createElement('label');
+  usernameLabel.innerText = 'Nombre:';
+  usernameLabel.style.display = 'block';
+  usernameLabel.style.marginBottom = '8px';
+
+  const usernameInput = document.createElement('input');
+  usernameInput.type = 'text';
+  usernameInput.name = 'nombre';
+  usernameInput.style.marginBottom = '16px';
+  usernameInput.style.display = 'block';
+  usernameInput.required = true;
+
+  const passwordLabel = document.createElement('label');
+  passwordLabel.innerText = 'Contraseña:';
+  passwordLabel.style.display = 'block';
+  passwordLabel.style.marginBottom = '8px';
+
+  const passwordInput = document.createElement('input');
+  passwordInput.type = 'password';
+  passwordInput.name = 'contraseña';
+  passwordInput.style.marginBottom = '16px';
+  passwordInput.style.display = 'block';
+  passwordInput.required = true;
+
+  const confirmButton = document.createElement('button');
+  confirmButton.innerText = 'Confirmar';
+  confirmButton.style.padding = '10px 20px';
+  confirmButton.style.backgroundColor = '#4CAF50';
+  confirmButton.style.color = '#fff';
+  confirmButton.style.border = 'none';
+  confirmButton.style.borderRadius = '4px';
+  confirmButton.style.cursor = 'pointer';
+
+  confirmButton.addEventListener('click', () => requestLogin(usernameInput.value, passwordInput.value)); // Cierra el modal
+
+  const closeButton = document.createElement('button');
+  closeButton.innerText = 'Cancelar';
+  closeButton.style.padding = '10px 20px';
+  closeButton.style.backgroundColor = '#f44336';
+  closeButton.style.color = '#fff';
+  closeButton.style.border = 'none';
+  closeButton.style.borderRadius = '4px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.marginLeft = '16px';
+  closeButton.addEventListener('click', () => modal.remove());
+
+  modal.appendChild(modalContent);
+  modalContent.appendChild(usernameLabel);
+  modalContent.appendChild(usernameInput);
+  modalContent.appendChild(passwordLabel);
+  modalContent.appendChild(passwordInput);
+  modalContent.appendChild(confirmButton);
+  modalContent.appendChild(closeButton);
+
+  document.body.appendChild(modal);
+}
+
+// Función para manejar el evento de autenticación
+const requestLogin = async (username, password) => {
+  
+  sessionStorage.clear();
+  
+  if (!username || !password || username === '' || password === '') {
+    alert("Por favor, introduce tu nombre de usuario y contraseña.");
+    return;
+  }
+
+  // Crear el objeto de datos con el nombre de usuario y la contraseña
+  const data = {
+    nombre: username,
+    password: password,
+  };
+
+  try {
+    const response = await fetch("http://" + host + "/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    // Si la respuesta es exitosa (status 200-299)
+    if (response.ok) {
+      const jwt = response.headers.get("Authorization");
+      if (jwt) {
+        sessionStorage.setItem("jsonWebToken", jwt);
+        document.getElementById('modal').remove();
+        loadEmpleados(); // Recargar la lista de empleados
+      } else {
+        alert("Token no recibido en los encabezados.");
+      }
+    } else {
+      const errorMessage = await response.text();
+      alert("Credenciales incorrectas: " + errorMessage);
+    }
+  } catch (error) {
+    console.error("Error al intentar autenticar:", error);
+    alert("Hubo un error al intentar autenticarte. Intenta de nuevo.");
+  }
 
 };

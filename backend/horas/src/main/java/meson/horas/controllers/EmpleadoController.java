@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.ByteArrayOutputStream;
@@ -79,6 +80,20 @@ public class EmpleadoController {
             var token = jwtUtil.doGenerateToken(id.toString());
             return ResponseEntity.ok().header("Authorization", token).body(empl);
         }catch(Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("addDNI/{id}")
+    public ResponseEntity<Empleado> addDNI(@PathVariable Long id, @RequestParam String DNI) {
+        try{
+            var empleado = empleadoService.getEmpleado(id);
+            empleado.setDNI(DNI);
+            return ResponseEntity.ok(empleadoService.editEmpleado(empleado));
+        }catch(Exception e){
+            if(e instanceof HttpClientErrorException){
+                return ResponseEntity.badRequest().build();
+            }
             return ResponseEntity.notFound().build();
         }
     }
@@ -98,7 +113,8 @@ public class EmpleadoController {
             var output = generarInformeEmpleado(empleado, fechaInicio, fechaFin);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=" + empleado.getNombre() + ".xlsx");
+            String filename = empleado.getNombre() + (empleado.getDNI() != null ? ("-" + empleado.getDNI()):"");
+            headers.add("Content-Disposition", "attachment; filename=" + filename + ".xlsx");
             headers.add("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             headers.add("Access-Control-Expose-Headers", "Content-Disposition, Content-Type");
 
@@ -134,7 +150,8 @@ public class EmpleadoController {
                     byte[] report = generarInformeEmpleado(empleado, fechaInicio, fechaFin);
 
                     // Add the report to the ZIP file
-                    ZipEntry zipEntry = new ZipEntry(empleado.getNombre() + ".xlsx");
+                    String filename = empleado.getNombre() + (empleado.getDNI() != null ? ("-" + empleado.getDNI()):"");
+                    ZipEntry zipEntry = new ZipEntry(filename + ".xlsx");
                     zipStream.putNextEntry(zipEntry);
                     zipStream.write(report);
                     zipStream.closeEntry();
@@ -206,15 +223,34 @@ public class EmpleadoController {
             for (Evento evento : eventosDelDia) {
                 if (evento.getTurno() == 0) {
                     if (evento.getTipo() == 0) {
-                        entradaMañana = evento.getFechaHora();
+                        if(entradaMañana != null) {
+                            entradaMañana = entradaMañana.isBefore(evento.getFechaHora()) ? entradaMañana : evento.getFechaHora();
+                        }else {
+                            entradaMañana = evento.getFechaHora();
+                        }
                     } else {
-                        salidaMañana = evento.getFechaHora();
+                        if (salidaMañana != null) {
+                            salidaMañana = salidaMañana.isAfter(evento.getFechaHora()) ? salidaMañana : evento.getFechaHora();
+                        } else {
+                            salidaMañana = evento.getFechaHora();
+                        }
                     }
                 } else {
                     if (evento.getTipo() == 0) {
-                        entradaTarde = evento.getFechaHora();
+                        if(entradaTarde != null) {
+                            entradaTarde = entradaTarde.isBefore(evento.getFechaHora()) ? entradaTarde : evento.getFechaHora();
+                        }else {
+                            entradaTarde = evento.getFechaHora();
+                        }
                     } else {
-                        salidaTarde = evento.getFechaHora();
+                        if (salidaTarde != null) {
+                            salidaTarde = salidaTarde.isAfter(evento.getFechaHora()) ? salidaTarde : evento.getFechaHora();
+                        } else {
+                            salidaTarde = evento.getFechaHora();
+                        }
+                        if(salidaTarde.getHour() < 2){
+                            salidaTarde = evento.getFechaHora();
+                        }
                     }
                 }
             }

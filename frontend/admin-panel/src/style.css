@@ -45,6 +45,22 @@ button {
   border-radius: 5px;
 }
 
+.delete-button {
+  background-color: #f44336;
+}
+
+button.delete-button:hover {
+  background-color: #970d03;
+}
+
+.generar-informes-button {
+  background-color: #001799;
+}
+
+button.generar-informes-button:hover {
+  background-color: #011fc9;
+}
+
 button:hover {
   background-color: #45a049;
 }

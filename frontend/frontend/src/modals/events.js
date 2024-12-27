@@ -1,4 +1,4 @@
-const host = "192.168.1.149"
+const host = "192.168.1.242";
 
 const server = "http://" + host + ":8080/";
 
@@ -30,6 +30,35 @@ const generateModal = (mode) => {
     modalContent.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
     modalContent.style.textAlign = 'center';
 
+    const dniLabel = document.createElement('label');
+    dniLabel.innerText = 'DNI:';
+    dniLabel.style.display = 'block';
+    dniLabel.style.marginBottom = '8px';
+
+    const dniInput = document.createElement('input');
+    dniInput.type = 'text';
+    dniInput.name = 'dni';
+    dniInput.style.marginBottom = '16px';
+    dniInput.style.display = 'block';
+    dniInput.required = true;
+
+    if(mode === 0){
+        modalContent.appendChild(dniLabel);
+        modalContent.appendChild(dniInput);
+    }
+
+    const repeatPasswordLabel = document.createElement('label');
+    repeatPasswordLabel.innerText = 'Repite la contraseña:';
+    repeatPasswordLabel.style.display = 'block';
+    repeatPasswordLabel.style.marginBottom = '8px';
+
+    const repeatPasswordInput = document.createElement('input');
+    repeatPasswordInput.type = 'password';
+    repeatPasswordInput.name = 'repite_contraseña';
+    repeatPasswordInput.style.marginBottom = '16px';
+    repeatPasswordInput.style.display = 'block';
+    repeatPasswordInput.required = true;
+    
     const usernameLabel = document.createElement('label');
     usernameLabel.innerText = 'Nombre:';
     usernameLabel.style.display = 'block';
@@ -63,7 +92,13 @@ const generateModal = (mode) => {
     confirmButton.style.borderRadius = '4px';
     confirmButton.style.cursor = 'pointer';
 
-    confirmButton.addEventListener('click', () => sendEventRequest(usernameInput.value, passwordInput.value, mode)); // Cierra el modal
+    confirmButton.addEventListener('click', () => {
+        if(mode === 0 && passwordInput.value !== repeatPasswordInput.value) {
+            alert("Las contraseñas no coinciden.");
+            return;
+        }
+        sendEventRequest(usernameInput.value, passwordInput.value, dniInput.value, mode);
+    }); // Cierra el modal
 
     const closeButton = document.createElement('button');
     closeButton.innerText = 'Cancelar';
@@ -77,10 +112,22 @@ const generateModal = (mode) => {
     closeButton.addEventListener('click', () => modal.remove());
 
     modal.appendChild(modalContent);
+
+    if(mode === 0) {
+        modalContent.appendChild(dniLabel);
+        modalContent.appendChild(dniInput);
+    }
+
     modalContent.appendChild(usernameLabel);
     modalContent.appendChild(usernameInput);
     modalContent.appendChild(passwordLabel);
     modalContent.appendChild(passwordInput);
+
+    if(mode === 0) {
+        modalContent.appendChild(repeatPasswordLabel);
+        modalContent.appendChild(repeatPasswordInput);
+    }
+
     modalContent.appendChild(confirmButton);
     modalContent.appendChild(closeButton);
 
@@ -88,7 +135,7 @@ const generateModal = (mode) => {
 }
 
 
-const sendEventRequest = (username, password, mode) => {
+const sendEventRequest = (username, password, dni, mode) => {
     
     if(!username || !password) {
         alert("Por favor, llena todos los campos.");
@@ -99,6 +146,7 @@ const sendEventRequest = (username, password, mode) => {
     const data = {
         nombre: username,
         password: password,
+        dni: dni
     };
 
     // Enviar los datos a la API usando fetch

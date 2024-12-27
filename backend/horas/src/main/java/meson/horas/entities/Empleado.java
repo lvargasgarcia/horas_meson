@@ -14,7 +14,10 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"nombre"}))
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"nombre"}),
+        @UniqueConstraint(columnNames = {"DNI"})
+})
 public class Empleado implements Serializable {
 
     @Id
@@ -25,6 +28,8 @@ public class Empleado implements Serializable {
     private String nombre;
 
     private boolean trabajando;
+
+    private String DNI;
 
     private String password; // Campo para la contraseña hasheada.
 

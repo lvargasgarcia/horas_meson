@@ -35,7 +35,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/meson
       SPRING_DATASOURCE_USERNAME: lalo
       SPRING_DATASOURCE_PASSWORD: 7175
-      JWT_SECRET: Ggl+HoPPlLwrZCLU4mOrciar8ssa5AuHqfMcld2eKfXStbOPYlJxmfsoKVjB0PG2JoY2PZVZxh9auZ22vof7fg==
       JWT_TOKEN_VALIDITY: 600
     env_file:
       - .env

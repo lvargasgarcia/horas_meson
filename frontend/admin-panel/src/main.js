@@ -1,4 +1,5 @@
-const host = "192.168.1.134:8080";
+const ip = "192.168.1.149"
+const host = ip + ":8080";
 const apiUrl = 'http://' + host + '/empleado'; // Asegúrate de que tu API esté corriendo en este URL
 
 // Referencias de los elementos en el DOM

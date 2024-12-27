@@ -24,4 +24,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     @Query("SELECT e FROM Evento e WHERE e.empleado.id = :empleadoId AND FUNCTION('DATE', e.fechaHora) BETWEEN :fechaInicio AND :fechaFin")
     List<Evento> findEventosByEmpleadoAndRangoFechas(Long empleadoId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
+    @Query("SELECT e FROM Evento e WHERE e.empleado.id = :empleadoId AND FUNCTION('DATE', e.fechaHora) = :fecha AND e.turno = :turno")
+    List<Evento>findEventosByEmpleadoAndTurnoAndFecha(Long empleadoId, int turno, LocalDate fecha);
+
 }

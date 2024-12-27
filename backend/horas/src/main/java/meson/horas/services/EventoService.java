@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import meson.horas.repositories.EventoRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -42,8 +43,14 @@ public class EventoService {
             throw new RuntimeException("Contraseña incorrecta");
         }
         var turno = (fechaYHoraActual.getHour() < 19 && fechaYHoraActual.getHour() > 2) ? 0 : 1;
-        var tipo = !empleado.isTrabajando() ? 0 : 1;
-        empleado.setTrabajando(!empleado.isTrabajando());
+
+        int tipo;
+        if(!eventoRepository.findEventosByEmpleadoAndTurnoAndFecha(empleado.getId(), turno, fechaYHoraActual.toLocalDate()).isEmpty()){
+            tipo = 1;
+        }else{
+            tipo = 0;
+        }
+
         return eventoRepository.save(Evento.builder()
                 .empleado(empleado)
                 .fechaHora(fechaYHoraActual)

@@ -3,54 +3,63 @@
         "id": 1,
         "nombre": "administrador",
         "trabajando": false,
-        "password": "$2a$10$Jj6y4rO5oF/OGW0/oapflekW3OiAJTZwV6z5aNTduRxEoE7fNRq6K"
+        "password": "$2a$10$Jj6y4rO5oF/OGW0/oapflekW3OiAJTZwV6z5aNTduRxEoE7fNRq6K",
+        "dni": null
     },
     {
         "id": 102,
         "nombre": "lalo",
         "trabajando": false,
-        "password": "$2a$10$ylNqiOQu3Cwrc48KTqh8/.7edNuioCxCGxFOE4CVPK7LpeCSF0I2i"
+        "password": "$2a$10$ylNqiOQu3Cwrc48KTqh8/.7edNuioCxCGxFOE4CVPK7LpeCSF0I2i",
+        "dni": null
     },
     {
         "id": 152,
         "nombre": "Francis",
         "trabajando": false,
-        "password": "$2a$10$GxnRm33g9Gt0j2lyiFURce7HUZcM9ZXK44RCR5eaxB1wvd//oKzw6"
+        "password": "$2a$10$GxnRm33g9Gt0j2lyiFURce7HUZcM9ZXK44RCR5eaxB1wvd//oKzw6",
+        "dni": null
     },
     {
         "id": 153,
         "nombre": "Francelbis G",
         "trabajando": false,
-        "password": "$2a$10$38u1DMggUPVpNBqJ6X0wa.fzdFiLV36cjp2zZlvk2bOm0w8IEx7lS"
+        "password": "$2a$10$38u1DMggUPVpNBqJ6X0wa.fzdFiLV36cjp2zZlvk2bOm0w8IEx7lS",
+        "dni": null
     },
     {
         "id": 154,
         "nombre": "GISELL",
         "trabajando": false,
-        "password": "$2a$10$7SG3mavdMV8RvGu7LT/YdOqwH3eQjLxcUAs0KimRVRR3KL50WCZwe"
+        "password": "$2a$10$7SG3mavdMV8RvGu7LT/YdOqwH3eQjLxcUAs0KimRVRR3KL50WCZwe",
+        "dni": null
     },
     {
         "id": 155,
         "nombre": "Nadir",
         "trabajando": false,
-        "password": "$2a$10$Af42Exe/H8D4enGpZ7OZl.0RX/KeZWf0BQYdbM2ALUAdl/olK0Nu."
+        "password": "$2a$10$Af42Exe/H8D4enGpZ7OZl.0RX/KeZWf0BQYdbM2ALUAdl/olK0Nu.",
+        "dni": null
     },
     {
         "id": 156,
         "nombre": "Alvaro",
         "trabajando": false,
-        "password": "$2a$10$lGimdyMMZbtdJf9c3EZ.eeT9XFHSDP/qPGZq0zWf6L1Ym8/ge2LPy"
+        "password": "$2a$10$lGimdyMMZbtdJf9c3EZ.eeT9XFHSDP/qPGZq0zWf6L1Ym8/ge2LPy",
+        "dni": null
     },
     {
         "id": 157,
         "nombre": "Agustin 1964",
         "trabajando": false,
-        "password": "$2a$10$xwXigSQjMl4476Kin4SYC.HWa2MPUvRA00n8nO7HUaAVjFEPhmZCK"
+        "password": "$2a$10$xwXigSQjMl4476Kin4SYC.HWa2MPUvRA00n8nO7HUaAVjFEPhmZCK",
+        "dni": null
     },
     {
         "id": 159,
         "nombre": "Agustin vargas",
         "trabajando": false,
-        "password": "$2a$10$AuL/nJLBli1rPzGOCD5VXOtachffav1g3PMEpjofoGGbqzLhuSMR."
+        "password": "$2a$10$AuL/nJLBli1rPzGOCD5VXOtachffav1g3PMEpjofoGGbqzLhuSMR.",
+        "dni": null
     }
 ]

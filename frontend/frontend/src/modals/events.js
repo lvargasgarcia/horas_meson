@@ -1,4 +1,4 @@
-const host = "192.168.1.242";
+const host = "192.168.1.149";
 
 const server = "http://" + host + ":8080/";
 
@@ -167,7 +167,8 @@ const sendEventRequest = (username, password, dni, mode) => {
         return response.json(); // Parseamos la respuesta como JSON
     })
     .then(data => {
-        (mode === 0) ? alert("Usuario registrado exitosamente."):alert("Entrada/Salida añadida.");
+        const hora = new Date().toLocaleTimeString("es-ES");
+        (mode === 0) ? alert("Usuario registrado exitosamente."):alert("Entrada/Salida añadida: " + hora);
     })
     .catch(error => {
         // En caso de error

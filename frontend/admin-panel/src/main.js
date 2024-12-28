@@ -1,4 +1,4 @@
-const ip = "192.168.1.242";
+const ip = "192.168.1.149";
 const host = ip + ":8080";
 const apiUrl = 'http://' + host + '/empleado'; // Asegúrate de que tu API esté corriendo en este URL
 

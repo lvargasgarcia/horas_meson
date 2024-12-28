@@ -28,10 +28,6 @@ public class EmpleadoService {
 
     public Empleado saveEmpleado(Empleado empleado) {
 
-        if(!empleado.getDNI().matches("\\d{8}[A-Z]")) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
-        }
-
         return empleadoRepository.save(Empleado.builder()
                 .nombre(empleado.getNombre())
                 .password(empleado.encodePassword(empleado.getPassword()))
@@ -41,7 +37,7 @@ public class EmpleadoService {
 
     public Empleado editEmpleado(Empleado empleado) {
 
-        if(!empleado.getDNI().matches("\\d{8}[A-Z]") || empleado.getId() == null) {
+        if(empleado.getId() == null) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
         return empleadoRepository.save(empleado);

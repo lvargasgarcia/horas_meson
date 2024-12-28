@@ -248,7 +248,7 @@ public class EmpleadoController {
                         } else {
                             salidaTarde = evento.getFechaHora();
                         }
-                        if(salidaTarde.getHour() < 2){
+                        if(evento.getFechaHora().getHour() < 2){
                             salidaTarde = evento.getFechaHora();
                         }
                     }

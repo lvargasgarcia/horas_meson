@@ -6,6 +6,7 @@ import meson.horas.security.JwtUtil;
 import meson.horas.services.EmpleadoService;
 import meson.horas.services.EventoService;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -202,8 +203,30 @@ public class EmpleadoController {
         monthSummaryStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         monthSummaryStyle.setAlignment(HorizontalAlignment.CENTER);
 
+        CellStyle titleStyle = workbook.createCellStyle();
+        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+        Font titleFont = workbook.createFont();
+        titleFont.setBold(true);
+        titleStyle.setFont(titleFont);
+
+        // Primera fila de título
+        Row titleRow1 = sheet.createRow(0);
+        Cell titleCell1 = titleRow1.createCell(0);
+        titleCell1.setCellValue("COMER Y PICOTEAR S.L. CIF: B44904704");
+        titleCell1.setCellStyle(titleStyle);
+        // Combinar las celdas para la primera fila
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+
+        // Segunda fila de título
+        Row titleRow2 = sheet.createRow(1);
+        Cell titleCell2 = titleRow2.createCell(0);
+        titleCell2.setCellValue("DNI DEL EMPLEADO: " + (empleado.getDNI() != null ? empleado.getDNI() : "No disponible"));
+        titleCell2.setCellStyle(titleStyle);
+        // Combinar las celdas para la segunda fila
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 5));
+
         // Crear la fila de encabezados
-        Row headerRow = sheet.createRow(0);
+        Row headerRow = sheet.createRow(2);
         String[] columns = {"Fecha", "Entrada Mañana", "Salida Mañana", "Entrada Tarde", "Salida Tarde", "Total Horas"};
         for (int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
@@ -212,7 +235,7 @@ public class EmpleadoController {
         }
 
         // Agregar las filas con los eventos
-        int rowIndex = 1;
+        int rowIndex = 3;
         Map<YearMonth, Duration> duracionMensual = new TreeMap<>();
         for (Map.Entry<LocalDate, List<Evento>> entry : eventosPorDia.entrySet()) {
             LocalDate dia = entry.getKey();
@@ -286,6 +309,11 @@ public class EmpleadoController {
 
             YearMonth mes = YearMonth.from(dia);
             duracionMensual.put(mes, duracionMensual.getOrDefault(mes, Duration.ZERO).plus(totalDuration));
+        }
+
+        // Ajustar ancho de columnas para mejor visualización
+        for (int i = 0; i < columns.length; i++) {
+            sheet.autoSizeColumn(i);
         }
 
         // Crear la tabla de resumen mensual

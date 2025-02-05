@@ -1,4 +1,4 @@
-# Usa una imagen base con Maven y JDK
+# Usa una imagen base con Maven y JDK para construir la aplicación
 FROM maven:latest AS build
 
 # Establece un directorio de trabajo en el contenedor
@@ -13,6 +13,9 @@ RUN mvn clean package -DskipTests
 
 # Usa una imagen base de JDK para ejecutar el JAR
 FROM openjdk:21-jdk-slim
+
+# Instala la librería faltante libfreetype6
+RUN apt-get update && apt-get install -y libfreetype6 fontconfig && rm -rf /var/lib/apt/lists/*
 
 # Establece un directorio de trabajo en el contenedor
 WORKDIR /app
@@ -34,5 +37,6 @@ ENV SPRING_APPLICATION_NAME=horas \
 
 # Comando para ejecutar el JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
 
 

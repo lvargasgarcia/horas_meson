@@ -1,4 +1,4 @@
-const host = "192.168.1.149";
+const host = "horaspicoteo.duckdns.org";
 
 const server = "http://" + host + ":8080/";
 

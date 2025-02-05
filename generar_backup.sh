@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOSTNAME="localhost:8080"
+HOSTNAME="horaspicoteo.duckdns.org:8080"
 
 ADMIN_USERNAME="administrador"
 ADMIN_PASSWORD="picoteo"

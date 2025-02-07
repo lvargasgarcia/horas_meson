@@ -1,15 +1,15 @@
 #!/bin/bash
 
-HOSTNAME="horaspicoteo.duckdns.org:8080"
+HOSTNAME="backend.horaspicoteo.duckdns.org"
 
 ADMIN_USERNAME="administrador"
 ADMIN_PASSWORD="picoteo"
 
-REQUEST="http://$HOSTNAME/empleado/generarInforme?fechaInicio=2024-12-24&fechaFin=$(date +"%Y-%m-%d")"
+REQUEST="https://$HOSTNAME/empleado/generarInforme?fechaInicio=2024-12-24&fechaFin=$(date +"%Y-%m-%d")"
 
 echo $REQUEST
 
-TOKEN="$(curl -s -D - -X POST -H "Content-Type: application/json" -d "{\"nombre\":\"$ADMIN_USERNAME\", \"password\":\"$ADMIN_PASSWORD\"}" http://$HOSTNAME/login | awk '/^Authorization:/ {print $0}' | sed -n 's/^Authorization: \(.*\)/\1/p')"
+TOKEN="$(curl -s -D - -X POST -H "Content-Type: application/json" -d "{\"nombre\":\"$ADMIN_USERNAME\", \"password\":\"$ADMIN_PASSWORD\"}" https://$HOSTNAME/login | awk '/^Authorization:/ {print $0}' | sed -n 's/^Authorization: \(.*\)/\1/p')"
 
 ZIP_FILE=~/informes_meson/$(date +"%Y-%m-%d").zip
 TARGET_DIR=~/informes_meson/$(date +"%Y-%m-%d")

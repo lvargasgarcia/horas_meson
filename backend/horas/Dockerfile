@@ -36,7 +36,4 @@ ENV SPRING_APPLICATION_NAME=horas \
     JWT_TOKEN_VALIDITY=600
 
 # Comando para ejecutar el JAR
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
-
+ENTRYPOINT ["java", "-Xms128m", "-Xmx512m", "-jar", "app.jar"]

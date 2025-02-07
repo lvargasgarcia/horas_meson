@@ -1,6 +1,4 @@
-const host = "horaspicoteo.duckdns.org";
-
-const server = "http://" + host + ":8080/";
+const server = "https://backend.horaspicoteo.duckdns.org/"
 
 const registrateEvent = async (mode) => {
     

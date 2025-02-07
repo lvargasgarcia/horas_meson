@@ -1,6 +1,6 @@
-const ip = "horaspicoteo.duckdns.org";
-const host = ip + ":8080";
-const apiUrl = 'http://' + host + '/empleado'; // Asegúrate de que tu API esté corriendo en este URL
+const host = "backend.horaspicoteo.duckdns.org";
+const apiUrl = 'https://' + host;
+const apiEmpleados = apiUrl + "/empleado" 
 
 // Referencias de los elementos en el DOM
 const empleadosTable = document.getElementById('empleados-table').getElementsByTagName('tbody')[0];
@@ -16,7 +16,7 @@ const loadEmpleados = async () => {
   try {
     const jwt = sessionStorage.getItem('jsonWebToken');
     //console.log(jwt)
-    const response = await fetch(apiUrl, {
+    const response = await fetch(apiEmpleados, {
       headers: {
         'Authorization': `Bearer ${jwt}`
       }
@@ -59,7 +59,7 @@ const deleteEmpleado = async (id) => {
   if (confirm('¿Estás seguro de que quieres eliminar este empleado?')) {
     try {
       const jwt = sessionStorage.getItem('jsonWebToken');
-      const response = await fetch(`${apiUrl}/${id}`, {
+      const response = await fetch(`${apiEmpleados}/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${jwt}`
@@ -87,7 +87,7 @@ const generateReport = async (id, fechaInicio, fechaFin) => {
   try {
   
     const jwt = sessionStorage.getItem('jsonWebToken');
-    const endpoint = id ? `${apiUrl}/generarInforme/${id}` : `${apiUrl}/generarInforme`;
+    const endpoint = id ? `${apiEmpleados}/generarInforme/${id}` : `${apiEmpleados}/generarInforme`;
     const endpointQuery = `${endpoint}?fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}`;
     console.log(endpointQuery);
     const response = await fetch(endpointQuery, {
@@ -318,7 +318,7 @@ const requestLogin = async (username, password) => {
   };
 
   try {
-    const response = await fetch("http://" + host + "/login", {
+    const response = await fetch(apiUrl + "/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

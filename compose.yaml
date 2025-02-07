@@ -78,6 +78,22 @@ services:
     networks:
       - my_network
 
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_reverse_proxy
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Ruta a tu archivo nginx.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - admin-panel
+      - fichar
+    networks:
+      - my_network
+
 networks:
   my_network:
     driver: bridge

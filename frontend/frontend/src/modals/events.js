@@ -6,6 +6,24 @@ const registrateEvent = async (mode) => {
 
 }
 
+const latitude = null;
+const longitude = null;
+
+const getLocation = () => {
+    let latitude = null;
+    let longitude = null;
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            console.log("latitude: " + latitude + " longitude: " + longitude);
+        });
+    }
+    return {lat: latitude, long: longitude};
+};
+
+getLocation();
+
 const generateModal = (mode) => {
     
     const modal = document.createElement('div');
@@ -144,7 +162,9 @@ const sendEventRequest = (username, password, dni, mode) => {
     const data = {
         nombre: username,
         password: password,
-        dni: dni
+        dni: dni,
+        latitud: latitude ? latitude : "no disponible",
+        longitud: longitude ? longitude : "no disponible"
     };
 
     // Enviar los datos a la API usando fetch
@@ -170,7 +190,7 @@ const sendEventRequest = (username, password, dni, mode) => {
     })
     .catch(error => {
         // En caso de error
-        alert("Error al enviar los datos. Intenta de nuevo.");
+        alert(error.message || "Hubo un problema con la solicitud");
         console.error("Error:", error);
     });
     document.getElementById("modal").remove();

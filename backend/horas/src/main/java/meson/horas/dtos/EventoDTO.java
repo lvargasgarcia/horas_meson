@@ -12,5 +12,7 @@ public class EventoDTO {
 
     private String nombre;
     private String password;
+    private String latitud;
+    private String longitud;
 
 }

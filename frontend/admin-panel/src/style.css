@@ -49,6 +49,14 @@ button {
   background-color: #f44336;
 }
 
+.edit-button {
+  background-color: #002fff;
+}
+
+button.edit-button:hover {
+  background-color: #011fa8;
+}
+
 button.delete-button:hover {
   background-color: #970d03;
 }

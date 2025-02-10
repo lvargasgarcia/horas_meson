@@ -37,14 +37,16 @@ const loadEmpleados = async () => {
         <td>${dni}</td>
         <td>${nombre}</td>
         <td>
-          <button id="delete-${empleado.id}" class="delete-button">Eliminar</button>
+          <button id="edit-${empleado.id}" class="edit-button">Editar</button>
           <button id="generar-informe-${empleado.id}">Generar Informe</button>
+          <button id="delete-${empleado.id}" class="delete-button">Eliminar</button>
         </td>
       `;
 
       // Asociar los eventos de editar y eliminar
       document.getElementById(`delete-${empleado.id}`).addEventListener('click', () => deleteEmpleado(empleado.id));
       document.getElementById(`generar-informe-${empleado.id}`).addEventListener('click', () => generarModalFechas(empleado.id));
+      document.getElementById(`edit-${empleado.id}`).addEventListener('click', () => editarEmpleado(empleado));
     });
   } catch (error) {
     console.error('Error al cargar empleados:', error);
@@ -80,6 +82,111 @@ const deleteEmpleado = async (id) => {
       console.error('Error al eliminar el empleado:', error);
     }
   }
+};
+
+const editarEmpleado = async (empleado) => {
+  
+  const modal = document.createElement('div');
+  modal.setAttribute('id', 'modal');
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100%';
+  modal.style.height = '100%';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+  modal.style.display = 'flex';
+  modal.style.justifyContent = 'center';
+  modal.style.alignItems = 'center';
+  modal.style.zIndex = '1000';
+
+  const modalContent = document.createElement('div');
+  modalContent.style.backgroundColor = '#fff';
+  modalContent.style.padding = '20px';
+  modalContent.style.borderRadius = '8px';
+  modalContent.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  modalContent.style.textAlign = 'center';
+
+  const hora_entrada_dia_label = document.createElement('label');
+  hora_entrada_dia_label.innerText = 'Hora entrada día:';
+  hora_entrada_dia_label.style.display = 'block';
+  hora_entrada_dia_label.style.marginBottom = '8px';
+
+  const hora_entrada_dia_input = document.createElement('input');
+  hora_entrada_dia_input.type = 'time';
+  hora_entrada_dia_input.name = 'hora';
+  hora_entrada_dia_input.style.marginBottom = '16px';
+  hora_entrada_dia_input.style.display = 'block';
+  hora_entrada_dia_input.required = false;
+
+  const hora_entrada_noche_label = document.createElement('label');
+  hora_entrada_noche_label.innerText = 'Hora entrada noche:';
+  hora_entrada_noche_label.style.display = 'block';
+  hora_entrada_noche_label.style.marginBottom = '8px';
+
+  const hora_entrada_noche_input = document.createElement('input');
+  hora_entrada_noche_input.type = 'time';
+  hora_entrada_noche_input.name = 'hora';
+  hora_entrada_noche_input.style.marginBottom = '16px';
+  hora_entrada_noche_input.style.display = 'block';
+  hora_entrada_noche_input.required = false;
+
+  const confirmButton = document.createElement('button');
+  confirmButton.innerText = 'Confirmar';
+  confirmButton.style.padding = '10px 20px';
+  confirmButton.style.backgroundColor = '#4CAF50';
+  confirmButton.style.color = '#fff';
+  confirmButton.style.border = 'none';
+  confirmButton.style.borderRadius = '4px';
+  confirmButton.style.cursor = 'pointer';
+
+  confirmButton.addEventListener('click', () => empleadoEditado(empleado, hora_entrada_dia_input.value, hora_entrada_noche_input.value)); // Cierra el modal
+
+  const closeButton = document.createElement('button');
+  closeButton.innerText = 'Cancelar';
+  closeButton.style.padding = '10px 20px';
+  closeButton.style.backgroundColor = '#f44336';
+  closeButton.style.color = '#fff';
+  closeButton.style.border = 'none';
+  closeButton.style.borderRadius = '4px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.marginLeft = '16px';
+  closeButton.addEventListener('click', () => modal.remove());
+
+  modal.appendChild(modalContent);
+  modalContent.appendChild(hora_entrada_dia_label);
+  modalContent.appendChild(hora_entrada_dia_input);
+  modalContent.appendChild(hora_entrada_noche_label);
+  modalContent.appendChild(hora_entrada_noche_input);
+  modalContent.appendChild(confirmButton);
+  modalContent.appendChild(closeButton);
+
+  document.body.appendChild(modal);
+
+};
+
+const empleadoEditado = async (empleado, hora_entrada_dia, hora_entrada_noche) => {
+  
+  empleado.hora_entrada_dia = hora_entrada_dia ? hora_entrada_dia : empleado.hora_entrada_dia;
+  empleado.hora_entrada_noche = hora_entrada_noche ? hora_entrada_noche : empleado.hora_entrada_noche;
+
+  const response = await fetch(apiUrl + "/empleado/" + empleado.id, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(empleado),
+  });
+
+  console.log(empleado);
+  document.getElementById('modal').remove();
+
+  if (response.ok) {
+    alert("Empleado editado correctamente.");
+  } else {
+    alert("Error al editar empleado");
+  }
+  loadEmpleados();
+
 };
 
 const generateReport = async (id, fechaInicio, fechaFin) => {

@@ -20,10 +20,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -91,6 +88,19 @@ public class EmpleadoController {
             if(e instanceof HttpClientErrorException){
                 return ResponseEntity.badRequest().build();
             }
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarEmpleado(@PathVariable Long id, @RequestBody Empleado empleado) {
+        try{
+            if(!Objects.equals(id, empleado.getId())){
+                return ResponseEntity.badRequest().build();
+            }
+            var empl = empleadoService.editEmpleado(empleado);
+            return ResponseEntity.ok(empl);
+        }catch(Exception e){
             return ResponseEntity.notFound().build();
         }
     }

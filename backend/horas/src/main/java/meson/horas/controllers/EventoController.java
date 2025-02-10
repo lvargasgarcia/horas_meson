@@ -46,7 +46,7 @@ public class EventoController {
             var ev = eventoService.saveEvento(eventoDTO);
             return ResponseEntity.ok(ev);
         }catch(Exception e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 

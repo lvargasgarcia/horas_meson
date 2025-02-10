@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Component
@@ -49,6 +50,12 @@ public class EventoService {
             tipo = 1;
         }else{
             tipo = 0;
+        }
+
+        var c1 = empleado.getEntrada_dia() != null && tipo == 0 && turno == 0 && ChronoUnit.MINUTES.between(fechaYHoraActual.toLocalTime(), empleado.getEntrada_dia().toLocalTime()) > 5;
+        var c2 = empleado.getEntrada_noche() != null && tipo == 0 && turno == 1 && ChronoUnit.MINUTES.between(fechaYHoraActual.toLocalTime(), empleado.getEntrada_noche().toLocalTime()) > 5;
+        if(c1 || c2){
+            throw new RuntimeException("No se puede fichar más de 5 minutos antes de la hora de entrada");
         }
 
         return eventoRepository.save(Evento.builder()

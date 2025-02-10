@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.Serializable;
+import java.sql.Time;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,6 +33,10 @@ public class Empleado implements Serializable {
     private String DNI;
 
     private String password; // Campo para la contraseña hasheada.
+
+    private Time entrada_dia;
+
+    private Time entrada_noche;
 
     public String encodePassword(String password) {
         return new BCryptPasswordEncoder().encode(password);

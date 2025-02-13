@@ -5,7 +5,7 @@ HOSTNAME="backend.horaspicoteo.duckdns.org"
 ADMIN_USERNAME="administrador"
 ADMIN_PASSWORD="picoteo"
 
-REQUEST="https://$HOSTNAME/empleado/generarInforme?fechaInicio=2024-12-24&fechaFin=$(date +"%Y-%m-%d")"
+REQUEST="http://localhost:8080/empleado/generarInforme?fechaInicio=2024-12-24&fechaFin=$(date +"%Y-%m-%d")"
 
 echo $REQUEST
 
@@ -23,3 +23,4 @@ unzip $ZIP_FILE -d $TARGET_DIR
 
 rclone sync /home/lalo/informes_meson drive_meson:/informes_meson --progress
 
+rclone copy /home/lalo/horas_meson/bbdd_$(date +"%Y%m%d").tar.gz drive_meson: --progress

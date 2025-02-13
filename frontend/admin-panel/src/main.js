@@ -86,6 +86,7 @@ const deleteEmpleado = async (id) => {
 
 const editarEmpleado = async (empleado) => {
   
+  console.log(empleado)
   const modal = document.createElement('div');
   modal.setAttribute('id', 'modal');
   modal.style.position = 'fixed';
@@ -117,6 +118,9 @@ const editarEmpleado = async (empleado) => {
   hora_entrada_dia_input.style.marginBottom = '16px';
   hora_entrada_dia_input.style.display = 'block';
   hora_entrada_dia_input.required = false;
+  if(empleado.entrada_dia != null){
+    hora_entrada_dia_input.value = empleado.entrada_dia;
+  }
 
   const hora_entrada_noche_label = document.createElement('label');
   hora_entrada_noche_label.innerText = 'Hora entrada noche:';
@@ -129,6 +133,9 @@ const editarEmpleado = async (empleado) => {
   hora_entrada_noche_input.style.marginBottom = '16px';
   hora_entrada_noche_input.style.display = 'block';
   hora_entrada_noche_input.required = false;
+  if(empleado.entrada_noche != null){
+    hora_entrada_noche_input.value = empleado.entrada_noche;
+  }
 
   const confirmButton = document.createElement('button');
   confirmButton.innerText = 'Confirmar';
@@ -166,13 +173,26 @@ const editarEmpleado = async (empleado) => {
 
 const empleadoEditado = async (empleado, hora_entrada_dia, hora_entrada_noche) => {
   
-  empleado.hora_entrada_dia = hora_entrada_dia ? hora_entrada_dia : empleado.hora_entrada_dia;
-  empleado.hora_entrada_noche = hora_entrada_noche ? hora_entrada_noche : empleado.hora_entrada_noche;
+  empleado.entrada_dia = hora_entrada_dia ? hora_entrada_dia : empleado.entrada_dia;
+  empleado.entrada_noche = hora_entrada_noche ? hora_entrada_noche  : empleado.entrada_noche;
+
+
+  if(empleado.entrada_dia){
+    const partesDia = empleado.entrada_dia.split(":")
+    empleado.entrada_dia = `${partesDia[0]}:${partesDia[1]}:00`;
+  }
+
+  if(empleado.entrada_noche){
+    const partesNoche = empleado.entrada_noche.split(":")
+    empleado.entrada_noche = `${partesNoche[0]}:${partesNoche[1]}:00`;
+  }
+
 
   const response = await fetch(apiUrl + "/empleado/" + empleado.id, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${sessionStorage.getItem('jsonWebToken')}`
     },
     body: JSON.stringify(empleado),
   });

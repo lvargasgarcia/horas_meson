@@ -6,12 +6,10 @@ const registrateEvent = async (mode) => {
 
 }
 
-const latitude = null;
-const longitude = null;
+let latitude = null;
+let longitude = null;
 
 const getLocation = () => {
-    let latitude = null;
-    let longitude = null;
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
             latitude = position.coords.latitude;
@@ -19,7 +17,6 @@ const getLocation = () => {
             console.log("latitude: " + latitude + " longitude: " + longitude);
         });
     }
-    return {lat: latitude, long: longitude};
 };
 
 getLocation();

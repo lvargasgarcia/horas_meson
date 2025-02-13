@@ -19,7 +19,7 @@ public class EventoController {
     @Autowired
     HttpServletRequest request;
 
-    List<String> allowed_ips = List.of("46.37.82.184");
+    List<String> allowed_ips = List.of("46.37.82.184", "79.116.86.125");
 
     final double LAT_MESON = 36.726272;
     final double LON_MESON = -4.468948;
@@ -36,7 +36,7 @@ public class EventoController {
     @PostMapping
     public ResponseEntity<?> saveEvento(@RequestBody EventoDTO eventoDTO) {
         try{
-            var remote_ip = request.getRemoteAddr();
+            var remote_ip = request.getHeader("X-Real-IP");
             System.out.println("IP: " + remote_ip);
             System.out.println("Latitud: " + eventoDTO.getLatitud());
             System.out.println("Longitud: " + eventoDTO.getLongitud());

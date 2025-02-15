@@ -23,4 +23,4 @@ unzip $ZIP_FILE -d $TARGET_DIR
 
 rclone sync /home/lalo/informes_meson drive_meson:/informes_meson --progress
 
-rclone copy /home/lalo/horas_meson/bbdd_$(date +"%Y%m%d").tar.gz drive_meson: --progress
+

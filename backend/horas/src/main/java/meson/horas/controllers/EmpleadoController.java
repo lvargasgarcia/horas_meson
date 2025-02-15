@@ -39,7 +39,7 @@ public class EmpleadoController {
 
 
     @GetMapping
-    public ResponseEntity<List<Empleado>> getEmpleado() {
+    public ResponseEntity<List<Empleado>> getEmpleados() {
         try{
             return ResponseEntity.ok(empleadoService.getEmpleados());
         }catch(Exception e){
@@ -48,7 +48,7 @@ public class EmpleadoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Empleado> getEmpleado(@PathVariable Long id) {
+    public ResponseEntity<Empleado> getEmpleados(@PathVariable Long id) {
         try{
             return ResponseEntity.ok(empleadoService.getEmpleado(id));
         }catch(Exception e){
@@ -80,29 +80,18 @@ public class EmpleadoController {
 
     @PutMapping("addDNI/{id}")
     public ResponseEntity<Empleado> addDNI(@PathVariable Long id, @RequestParam String DNI) {
-        try{
-            var empleado = empleadoService.getEmpleado(id);
-            empleado.setDNI(DNI);
-            return ResponseEntity.ok(empleadoService.editEmpleado(empleado));
-        }catch(Exception e){
-            if(e instanceof HttpClientErrorException){
-                return ResponseEntity.badRequest().build();
-            }
-            return ResponseEntity.notFound().build();
-        }
+        var empleado = empleadoService.getEmpleado(id);
+        empleado.setDNI(DNI);
+        return ResponseEntity.ok(empleadoService.editEmpleado(empleado));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> editarEmpleado(@PathVariable Long id, @RequestBody Empleado empleado) {
-        try{
-            if(!Objects.equals(id, empleado.getId())){
-                return ResponseEntity.badRequest().build();
-            }
-            var empl = empleadoService.editEmpleado(empleado);
-            return ResponseEntity.ok(empl);
-        }catch(Exception e){
-            return ResponseEntity.notFound().build();
+        if(!Objects.equals(id, empleado.getId())){
+            throw new HttpClientErrorException(org.springframework.http.HttpStatus.BAD_REQUEST, "El id del empleado no coincide con el empleado a editar");
         }
+        var empl = empleadoService.editEmpleado(empleado);
+        return ResponseEntity.ok(empl);
     }
 
     @GetMapping("/generarInforme/{id}")

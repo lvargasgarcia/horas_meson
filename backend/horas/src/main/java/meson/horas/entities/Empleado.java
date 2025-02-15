@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.Serializable;
 import java.sql.Time;
+import java.util.HashMap;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +26,8 @@ public class Empleado implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @Transient
+    private HashMap<String, Horario> horarios;
 
     private String nombre;
 
@@ -34,10 +37,6 @@ public class Empleado implements Serializable {
 
     private String password; // Campo para la contraseña hasheada.
 
-    private Time entrada_dia;
-
-    private Time entrada_noche;
-
     public String encodePassword(String password) {
         return new BCryptPasswordEncoder().encode(password);
     }
@@ -45,6 +44,5 @@ public class Empleado implements Serializable {
     public boolean checkPassword(String password) {
         return new BCryptPasswordEncoder().matches(password, this.password);
     }
-
 
 }

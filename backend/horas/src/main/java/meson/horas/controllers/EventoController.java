@@ -4,9 +4,13 @@ import meson.horas.dtos.EventoDTO;
 import meson.horas.entities.Evento;
 import meson.horas.services.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.net.InetAddress;
 import java.util.List;
 
 @RestController
@@ -19,7 +23,15 @@ public class EventoController {
     @Autowired
     HttpServletRequest request;
 
-    List<String> allowed_ips = List.of("46.37.82.184", "79.116.86.125");
+    private String getIpCasa(){
+        try{
+            return InetAddress.getByName("vpnlalo.duckdns.org").toString().split("/")[1];
+        }catch(Exception e){
+            return "";
+        }
+    }
+
+    List<String> allowed_ips = List.of("46.37.82.184");
 
     final double LAT_MESON = 36.726272;
     final double LON_MESON = -4.468948;
@@ -35,19 +47,15 @@ public class EventoController {
 
     @PostMapping
     public ResponseEntity<?> saveEvento(@RequestBody EventoDTO eventoDTO) {
-        try{
-            var remote_ip = request.getHeader("X-Real-IP");
-            System.out.println("IP: " + remote_ip);
-            System.out.println("Latitud: " + eventoDTO.getLatitud());
-            System.out.println("Longitud: " + eventoDTO.getLongitud());
-            if(!(allowed_ips.contains(remote_ip)) && !validLocation(eventoDTO.getLatitud(), eventoDTO.getLongitud())){
-                return ResponseEntity.status(403).body("La IP " + remote_ip + " no está autorizada");
-            }
-            var ev = eventoService.saveEvento(eventoDTO);
-            return ResponseEntity.ok(ev);
-        }catch(Exception e){
-            return ResponseEntity.badRequest().build();
+        var remote_ip = request.getHeader("X-Real-IP") != null ? request.getHeader("X-Real-IP") : getIpCasa();
+        System.out.println("IP: " + remote_ip);
+        System.out.println("Latitud: " + eventoDTO.getLatitud());
+        System.out.println("Longitud: " + eventoDTO.getLongitud());
+        if(!ipValida(remote_ip) && !validLocation(eventoDTO.getLatitud(), eventoDTO.getLongitud())){
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Ubicación no permitida ¿Estás conectado a la red del Mesón?");
         }
+        var ev = eventoService.saveEvento(eventoDTO);
+        return ResponseEntity.ok(ev);
     }
 
     private boolean validLocation(String latitud, String longitud){
@@ -58,6 +66,10 @@ public class EventoController {
         }catch(Exception e){
             return false;
         }
+    }
+
+    private boolean ipValida(String ip){
+        return ip != null && (allowed_ips.contains(ip) || ip.equals(getIpCasa()));
     }
 
 }

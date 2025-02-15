@@ -1,4 +1,5 @@
-const server = "https://backend.horaspicoteo.duckdns.org/"
+// const server = "https://backend.horaspicoteo.duckdns.org/"
+const server = "http://localhost:8082/"
 
 const registrateEvent = async (mode) => {
     
@@ -148,7 +149,7 @@ const generateModal = (mode) => {
 }
 
 
-const sendEventRequest = (username, password, dni, mode) => {
+const sendEventRequest = async (username, password, dni, mode) => {
     
     if(!username || !password) {
         alert("Por favor, llena todos los campos.");
@@ -167,29 +168,37 @@ const sendEventRequest = (username, password, dni, mode) => {
     // Enviar los datos a la API usando fetch
     const endpoint = server + ((mode === 0) ? "empleado":"evento");
     console.log(endpoint);
-    fetch(endpoint, {
+    const response = await fetch(endpoint, {
         method: "POST", // Método HTTP
         headers: {
             "Content-Type": "application/json" // Indicamos que los datos se envían como JSON
         },
         body: JSON.stringify(data) // Convertimos el objeto en una cadena JSON
-    })
-    .then(response => {
-        // Verificamos si la respuesta es exitosa
-        if (!response.ok) {
-            throw new Error("Hubo un problema con la solicitud: " + response.statusText);
-        }
-        return response.json(); // Parseamos la respuesta como JSON
-    })
-    .then(data => {
-        const hora = new Date().toLocaleTimeString("es-ES");
-        (mode === 0) ? alert("Usuario registrado exitosamente."):alert("Entrada/Salida añadida: " + hora);
-    })
-    .catch(error => {
-        // En caso de error
-        alert(error.message || "Hubo un problema con la solicitud");
-        console.error("Error:", error);
     });
+
+    if (response.ok) {
+        if(mode === 0){
+            alert("Empleado registrado correctamente. Hora: " + new Date().toLocaleTimeString("es-ES"));
+        }else{
+            alert("Entrada/salida registrada correctamente. Hora: " + new Date().toLocaleTimeString("es-ES"));
+        }
+        document.getElementById("modal").remove();
+    } else {
+        const text = await response.text();
+        alert("Hubo un problema con la solicitud: " + text);
+    }
+
+    // // Verificamos si la respuesta es exitosa
+    // if (!response.ok) {
+    //     let texto = "";
+    //     response.body.tee((chunk) => {
+    //         texto += chunk;
+    //     });
+    //     alert("Hubo un problema con la solicitud: " + texto);
+    // }else{
+    //     alert("Entrada/salida registrada correctamente. Hora: " + new Date().toLocaleTimeString("es-ES"));
+    // }
+
     document.getElementById("modal").remove();
 }
 

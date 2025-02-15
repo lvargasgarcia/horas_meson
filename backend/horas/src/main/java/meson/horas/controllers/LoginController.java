@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 @RequestMapping("/login")
@@ -24,21 +25,14 @@ public class LoginController {
     @PostMapping
     public ResponseEntity<Empleado> authenticate(@RequestBody Empleado empleado) {
 
-        try {
-
-            if(!empleado.getNombre().matches("\\s*administrador\\s*")) throw new Exception();
-            var empl = empleadoRepository.findByNombre("administrador");
-            var id = empl.getId();
-            if(!empl.checkPassword(empleado.getPassword())) {
-                throw new Exception();
-            }
-            String jwtToken = jwtUtil.doGenerateToken(id.toString());
-            return ResponseEntity.ok().header("Authorization", jwtToken).body(empleado);
-
-
-        } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if(!empleado.getNombre().matches("\\s*administrador\\s*")) throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Credenciales incorrectas");
+        var empl = empleadoRepository.findByNombre("administrador");
+        var id = empl.getId();
+        if(!empl.checkPassword(empleado.getPassword())) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Credenciales incorrectas");
         }
+        String jwtToken = jwtUtil.doGenerateToken(id.toString());
+        return ResponseEntity.ok().header("Authorization", jwtToken).body(empleado);
 
     }
 

@@ -1,0 +1,26 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 7175
+      MYSQL_DATABASE: meson
+      MYSQL_USER: lalo
+      MYSQL_PASSWORD: 7175
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./bbdd/data:/var/lib/mysql
+    networks:
+      - my_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--host=localhost"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+networks:
+  my_network:
+    driver: bridge

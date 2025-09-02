@@ -2,8 +2,8 @@
 
 HOSTNAME="backend.horaspicoteo.duckdns.org"
 
-ADMIN_USERNAME="administrador"
-ADMIN_PASSWORD="picoteo"
+ADMIN_USERNAME="*****"
+ADMIN_PASSWORD="*****"
 
 REQUEST="http://localhost:8080/empleado/generarInforme?fechaInicio=2024-12-24&fechaFin=$(date +"%Y-%m-%d")"
 

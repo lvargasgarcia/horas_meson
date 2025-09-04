@@ -39,3 +39,4 @@ build/
 
 bbdd/
 .env
+*.tar.gz
